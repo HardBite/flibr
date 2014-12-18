@@ -5,3 +5,12 @@ from app import app
 def index():
   return 'Hello World!'
 
+@app.route('/sign_up')
+def sign_up():
+  pass
+
+@app.route('/log_in')
+def log_in():
+  pass
+
+
