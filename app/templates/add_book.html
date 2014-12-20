@@ -1,0 +1,6 @@
+<form method="POST" action="/add_book">
+  <div> {{form.title.label}}:{{form.title()}} </div>
+  <div> {{form.author.label}}: {{form.author()}}
+  <div> <input type="submit">
+    {{form.scrf_token}}
+</form>

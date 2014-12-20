@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+
+
+    <div id="header">
+      {%if title %}
+        <title> {{title}} Library </title>
+      {%else%}
+        <title> Welcome to The Library </title>
+      {% endif %}
+    </div>
+  </head>
+
+
+<body>
+
+  <div id="nav">
+    {{navigation}}
+  </div>
+
+  <div id="section">
+
+    {%if author_name %}
+      <h1>{{author_name}}</h1>
+      {%for book in books%}
+        {{book}}
+      {%endfor%}
+
+
+    
+
+
+
+
+    {%else%}
+      <h1> {{book_title }}</h1>
+  
+
+  
+{% for item in content %}
+  <p>{{item}}
+     {%endfor%}
+{%endif%}
+</p>
+<p>
+Standing on the River Thames, London has been a major settlement for two millennia,
+its history going back to its founding by the Romans, who named it Londinium.
+</p>
+</div>
+
+<div id="footer">
+Copyright © W3Schools.com
+</div>
+
+</body> 
+</html>
