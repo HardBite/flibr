@@ -1,6 +1,24 @@
 from app import app
-from flask import render_template, request
+from flask import render_template, request, json
 from models import Book, BookForm, Author, AuthorForm
+
+
+def add_or_resubmit(request, obj, form, submit_template_path, success_template_path):
+  print 'redirect request to add_of_resubmit'
+  error=None
+  if request.method == 'POST':
+    print 'POST method detected'
+    print 'request.form', request.form
+    form.populate_obj(obj)
+    is_submitted = obj.save_or_error()
+    if is_submitted==True:
+      return render_template(success_template_path)
+    else:
+      error = is_submitted
+      return render_template(submit_template_path, form=form, error=error)
+  else:
+    print 'GET method detected'
+    return render_template(submit_template_path, form=form, error=error)
 
 
 @app.route('/')
@@ -17,22 +35,14 @@ def log_in():
   pass
 
 @app.route('/add_book', methods = ['GET', 'POST'])
-def add_book():
-  #book = Book.get_by_id_or_new(request.args['id'])
-  book = Book()
-  book_form = BookForm(request.book_form, obj=book)
-  author = Author()
-  author_form = AuthorForm(request.author_form, obj=author)
-  if request.method == 'POST':
-    print 'well done'
-    book_form.populate_obj(book)
-    author_form.populate_obj(author)
-    book.save()
-    author.save()
-    return render_template('base.html')
-  else:
-    return render_template('add_book.html', form=form)
+def add_book(book=None):
+  print 'call to add_book recieved'
+  book = book or Book()
+  book_form = BookForm(request.form, obj=book)
+  return add_or_resubmit(request, book, book_form, 'add_book.html', 'base.html')
 
+@app.route('/add_author', methods = ['GET', 'POST'])
 def add_author():
-
-
+  author = Author()
+  author_form = AuthorForm(request.form, obj=author)
+  return add_or_resubmit(request, author, author_form, 'add_author.html', 'base.html')
