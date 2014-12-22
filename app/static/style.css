@@ -1,4 +1,3 @@
- <style>
 #header {
     background-color:black;
     color:white;
@@ -25,4 +24,23 @@
     text-align:center;
     padding:5px;
 }
-</style> 
+table.booksTable {
+    display: table;
+    width: 100%;
+}
+table.booksTable thead, table.booksTable tbody {
+    float: left;
+    width: 100%;
+}
+table.booksTable tbody {
+    overflow: auto;
+    height: 200px;
+}
+table.booksTable tr {
+    width: 100%;
+    display: table;
+    text-align: left;
+}
+table.booksTable th, table.booksTable td {
+    width: 33%
+}

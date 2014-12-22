@@ -1,15 +1,14 @@
 {%extends "base.html"%}
 {%block form %}
 
-{%if error%}
-<h1> {{error}}</h1>
-{%endif%}
+
+ <div class="notification"> <h1>{{error}} </h1></div>
+
 <form class="form" method="POST" action="/add_book">
 
   <p><div> {{form.title.label}}:{{form.title(class_='title')}} </div></p>
   <p><div> {{form.author.label}}: {{form.author(class_='author')}} </div></p>
-  <p><div> <input type="submit" value="Add Book" ></p>
-  <P> <button class="button" type="button"> Submit via ajax </button>
+  <p><div> <input type="submit" class="button" value="Add Book" ></p>
   
   {{form.scrf_token}}
 
@@ -18,13 +17,18 @@
 <script>
       $(document).ready(function(){
           $(".button").click(function(event){
-            var data = $(jQuery(".form")).serializeArray()
-            console.log(data);
-            $.ajax({
+            event.preventDefault();
+            
+            var data = $(jQuery(".form")).serializeArray();
+            $(".notification").hide();
+            
+            var request = $.ajax({
               type: "POST",
-              url: "/add_book",
+              url: "/json_add_book",
               data: data,
-              success: function(response){console.log(response)}
+              success: function(response){
+                $(".notification").html(response.notification);
+                $(".notification").show()}
             });
         });
         });

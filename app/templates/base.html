@@ -17,24 +17,25 @@
 
 
 <body>
-<p>This is the Base.html template</p>
+   <table class="booksTable">
+    <thead><tr><th>Book title </th>
+        <th>Book Author(s) </th></tr> </thead>
+    <tbody>
+    {%for book in books_list%}
+    <tr> <td> {{book.title}}</td>
+         <td> <ul>{%for author in book.author%}
+                <li>{{author.name}}</li>
+              {%endfor%} </td></tr></ul>
+    {%endfor%}
+        </tbody>
+        </table>
 
-  <div id="nav">
-    {% block navigation %}
-    {%endblock%}
-  </div>
-
-  <div id="section"> </div>
-<p>Here goes the form</p>
     {%block form%}
-    
+<p>Here goes the form</p>    
     {%endblock%}
-
+<hr>
 <div id="footer">
 Copyright © W3Schools.com
 </div>
-
-
-
 </body> 
 </html>

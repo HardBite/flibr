@@ -3,7 +3,7 @@ import re
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base, db_session
-from flask_wtf import Form
+#from flask_wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
 from sqlalchemy.ext.declarative import declared_attr
 from wtforms import StringField, validators
@@ -29,6 +29,10 @@ class Record(object):
   def get_by_id_or_new(self, id):
     entry = self.query.get(id)
     return entry if entry else self
+
+  def get_all(self):
+    return self.query.all()
+    
 
   def string_valid(self, string, min_length, max_length, forbidden_re):
     if string:
