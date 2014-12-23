@@ -15,24 +15,24 @@ body.rigthSection{
     width: 100px;
 }
 
-table.booksTable {
+table.entitiesTable {
     display: table;
     width: 100%;
 }
-table.booksTable thead, table.booksTable tbody {
+table.entitiesTable thead, table.entitiesTable tbody {
     float: left;
     width: 100%;
     
 }
-table.booksTable tbody {
+table.entitiesTable tbody {
     overflow: auto;
     height: 400px;
 }
-table.booksTable tr {
+table.entitiesTable tr {
     width: 100%;
     display: table;
     text-align: left;
 }
-table.booksTable th, table.booksTable td {
+table.entitiesTable th, table.entitiesTable td {
     width: 33%
 }

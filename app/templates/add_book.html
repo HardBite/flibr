@@ -1,11 +1,5 @@
-{%extends "base.html"%}
-{%block form %}
-
-
- 
-
 <form class="form" method="POST" action="/add_book">
-
+  <div class="notification"> <h1>{{notification}} </h1></div>
   <p> {{form.title.label}}:{{form.title(class_='title')}} </p>
   <p> {{form.author.label}}: {{form.author(class_='author')}}</p>
   <p> <input type="submit" class="button" value="Add Book" ></p>
@@ -13,8 +7,3 @@
   {{form.scrf_token}}
 
 </form>
-
-
-
-
-{%endblock%}

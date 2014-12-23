@@ -5,12 +5,19 @@
             $(".notification").fadeOut('slow', function(){$(this).hide();})
             var request = $.ajax({
               type: "POST",
-              url: "/json_add_book",
+              url: "/add_book",
               data: data,
               success: function(response){
+                console.log(response)
+                primeValue = response.prime_value 
+                relatedValues = response.related_values
+                console.log(primeValue, relatedValues)
+                console.log(response.html)
                 $(".notification").html(response.notification);
-                $(".notification").show()}
+                $(".notification").show()
+                $(".entityTableBody tr:last").after(response.html)}
             });
+            return false;
         });
           $(".deleteLink").click(function(event){
             console.log(this);
@@ -20,7 +27,7 @@
             parentText = parentText.substr(0, (parentText.length-6));
             console.log(requestUrl);
             console.log(parentText)
-            if(confirm(("Delete book"+parentText+". Are you sure?"))){
+            if(confirm(("Delete "+parentText+". Are you sure?"))){
               $.ajax({
                 type: "DELETE",
                 url: requestUrl,
@@ -31,6 +38,26 @@
                   var classToHide = response.class_to_hide
                   console.log(classToHide)
                   $(classToHide).fadeOut('slow', function(){$(this).remove();})
+                }
+              })};
+          });
+            $(".editLink").click(function(event){
+            console.log(this);
+            event.preventDefault();
+            var requestUrl = $(this).attr('href');
+            var parentText = $(this).parent().text();
+            parentText = parentText.substr(0, (parentText.length-6));
+            console.log(requestUrl);
+            console.log(parentText);
+            {
+              $.ajax({
+                type: "GET",
+                url: requestUrl,
+                data: "no data required",
+                success: function(response){
+                  var classToSub = response.ClassToSub
+                  console.log(classToSub)
+                  $(classToSub).replaceWith(response.html)
                 }
               })};
           });

@@ -1,0 +1,9 @@
+ {%for book in entities_list%}
+ <tr class="row_{{book.id}}">
+          <td> {{book.title}} 
+                  <a class="editLink" href={{url_for('edit_book', book_id = book.id)}}>Edit</a> ||
+                  <a class="deleteLink" href={{url_for('delete_book', book_id = book.id)}}>Del</a> </td>
+          <td> <ul>{%for author in book.author%}
+                <li>{{author.name}}</li>
+                    {%endfor%} </ul></td></tr>
+                    {%endfor%}

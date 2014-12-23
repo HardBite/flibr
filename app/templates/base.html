@@ -14,29 +14,20 @@
       {% endif %}
     </div>
   </head>
-<div class="notification"> <h1>{{notification}} </h1></div>
-
 <body>
   <div class="mainSection">
   <div class="leftSection">
-   <table class="booksTable">
-    <thead><tr><th>Book title </th>
-        <th>Book Author(s) </th></tr> </thead>
-    <tbody>
-    {%for book in books_list%}
-    <tr class="book_{{book.id}}"> <td> {{book.title}} <a class="deleteLink" href={{url_for('delete_book', book_id = book.id)}}>Del </a> </td>
-         <td> <ul>{%for author in book.author%}
-                <li>{{author.name}}</li>
-              {%endfor%} </td></tr></ul>
-    {%endfor%}
-        </tbody>
-        </table>
+   
+  {% if entities_list%}
+    {% include entities_list[0].pluralize()+'.html' %}
+  {%endif%}
+  
+  {%if book_form%}
+   {%include 'add_book.html'%}
+  {%endif%}
+
   </div>
-<div class="rigthSection">
-    {%block form%}
-<p>Here goes the form</p>    
-    {%endblock%}
-</div>
+
 </div>
 
 <script src="static/script.js"></script>
