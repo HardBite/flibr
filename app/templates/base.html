@@ -14,28 +14,32 @@
       {% endif %}
     </div>
   </head>
-
+<div class="notification"> <h1>{{notification}} </h1></div>
 
 <body>
+  <div class="mainSection">
+  <div class="leftSection">
    <table class="booksTable">
     <thead><tr><th>Book title </th>
         <th>Book Author(s) </th></tr> </thead>
     <tbody>
     {%for book in books_list%}
-    <tr> <td> {{book.title}}</td>
+    <tr class="book_{{book.id}}"> <td> {{book.title}} <a class="deleteLink" href={{url_for('delete_book', book_id = book.id)}}>Del </a> </td>
          <td> <ul>{%for author in book.author%}
                 <li>{{author.name}}</li>
               {%endfor%} </td></tr></ul>
     {%endfor%}
         </tbody>
         </table>
-
+  </div>
+<div class="rigthSection">
     {%block form%}
 <p>Here goes the form</p>    
     {%endblock%}
-<hr>
-<div id="footer">
-Copyright © W3Schools.com
 </div>
-</body> 
+</div>
+
+<script src="static/script.js"></script>
+
+</body>
 </html>

@@ -16,7 +16,7 @@ def add_or_resubmit(request, obj, form, submit_template_path, json_response=Fals
     is_submitted = obj.save_or_error()
     if is_submitted==True:
       if not json_response:
-        return redirect(url_for('index'))
+        return redirect(url_for('books'))
       else:
         return {"notification": "Book saved"}
     else:
@@ -32,11 +32,14 @@ def add_or_resubmit(request, obj, form, submit_template_path, json_response=Fals
 
 
 @app.route('/')
-@app.route('/index')
-@app.route('/index/<int:page>')
-def view():
+@app.route('/books')
+def books():
   books_list = Book().get_all()
-  return render_template('base.html', books_list=books_list )
+  return render_template('base.html', books_list=books_list)
+
+
+@app.route('/authors')
+def autors()
 
 @app.route('/sign_up')
 def sign_up():
@@ -60,6 +63,24 @@ def json_add_book(book=None):
   data = add_or_resubmit(request, book, BookForm(request.form, obj=book), 'add_book.html', json_response=True)
   print 'JSON response', data
   return jsonify(**data)
+
+@app.route('/delete_book/<int:book_id>', methods = ['GET', 'DELETE'])
+def delete_book(book_id):
+  print 'call to delete book recieved'
+  book = Book().get_by_id_or_new(book_id)
+  notification = 'Book '+str(book.title)+' deleted.'
+  class_to_hide = ".book_"+str(book_id)
+  if book.delete():
+    ###Distinguish html from ajax request. Ajax sends 'DELETE'
+    if request.method == 'DELETE':
+      data = {}
+      data['notification'] = notification
+      data['class_to_hide'] = class_to_hide
+      print 'delete_book return data', data
+      return jsonify(**data)
+    else:
+      redirect(url_for('books'))
+
 
 
 @app.route('/add_author', methods = ['GET', 'POST'])

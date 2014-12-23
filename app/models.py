@@ -56,6 +56,11 @@ class Record(object):
     else:
       return validity
 
+  def delete(self):
+    db_session.delete(self)
+    #db_session.commit()
+    return True
+
 
 class Book(Base, Record):
   title = Column(String(255))

@@ -2,37 +2,19 @@
 {%block form %}
 
 
- <div class="notification"> <h1>{{error}} </h1></div>
+ 
 
 <form class="form" method="POST" action="/add_book">
 
-  <p><div> {{form.title.label}}:{{form.title(class_='title')}} </div></p>
-  <p><div> {{form.author.label}}: {{form.author(class_='author')}} </div></p>
-  <p><div> <input type="submit" class="button" value="Add Book" ></p>
+  <p> {{form.title.label}}:{{form.title(class_='title')}} </p>
+  <p> {{form.author.label}}: {{form.author(class_='author')}}</p>
+  <p> <input type="submit" class="button" value="Add Book" ></p>
   
   {{form.scrf_token}}
 
 </form>
 
-<script>
-      $(document).ready(function(){
-          $(".button").click(function(event){
-            event.preventDefault();
-            
-            var data = $(jQuery(".form")).serializeArray();
-            $(".notification").hide();
-            
-            var request = $.ajax({
-              type: "POST",
-              url: "/json_add_book",
-              data: data,
-              success: function(response){
-                $(".notification").html(response.notification);
-                $(".notification").show()}
-            });
-        });
-        });
-</script>
+
 
 
 {%endblock%}

@@ -1,29 +1,20 @@
-#header {
-    background-color:black;
-    color:white;
-    text-align:center;
-    padding:5px;
+body{
+    margin: 0;
 }
-#nav {
-    line-height:30px;
-    background-color:#eeeeee;
-    height:300px;
-    width:100px;
-    float:left;
-    padding:5px;
+
+body.leftSection{
+    float: left;
+    outline: solid 1px red;
+    background-color: green;
+    width: 350px;
 }
-#section {
-    width:350px;
-    float:left;
-    padding:10px;
+body.rigthSection{
+    float: right;
+    outline: solid 1px #000000;
+    background-color: #66CC00;
+    width: 100px;
 }
-#footer {
-    background-color:black;
-    color:white;
-    clear:both;
-    text-align:center;
-    padding:5px;
-}
+
 table.booksTable {
     display: table;
     width: 100%;
@@ -31,10 +22,11 @@ table.booksTable {
 table.booksTable thead, table.booksTable tbody {
     float: left;
     width: 100%;
+    
 }
 table.booksTable tbody {
     overflow: auto;
-    height: 200px;
+    height: 400px;
 }
 table.booksTable tr {
     width: 100%;
