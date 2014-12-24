@@ -26,6 +26,16 @@ class Record(object):
 
   id = Column(Integer, primary_key=True)
 
+  def give_child(self, inst_name):
+    if inst_name == 'book':
+      return Book()
+    elif inst_name == 'author':
+      return Author()
+
+  def give_form(self):
+    form = model_form((eval(type(self).__name__)), db_session)
+    return form
+
   def introduce(self):
     return type(self).__name__
 
@@ -60,7 +70,9 @@ class Record(object):
     validity = self.is_valid()
     if validity == True:
       if self.id:
-        return true
+        db_session.add(self)
+        db_session.commit()
+        print 'entity', self, self.id, 'updated'
       else:
         db_session.add(self)
         db_session.commit()

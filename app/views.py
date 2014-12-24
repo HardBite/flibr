@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, request, jsonify, redirect, url_for
-from models import Book, BookForm, Author, AuthorForm
+from models import Record, Book, BookForm, Author, AuthorForm
+#import ipdb
 
 @app.route('/')
 @app.route('/books')
@@ -20,7 +21,7 @@ def sign_up():
 @app.route('/log_in')
 def log_in():
   pass
-
+"""
 @app.route('/add_book', methods = ['GET', 'POST'])
 def add_book(book=None):
   book = book or Book()
@@ -31,24 +32,56 @@ def add_book(book=None):
 def add_author():
   author = Author()
   author_form = AuthorForm(request.form, obj=author)
-  return add_or_resubmit(request, author, author_form, 'add_author.html')
+  return add_or_resubmit(request, author, author_form, 'add_author.html')"""
 
-@app.route('/edit_book/<int:book_id>')
-def edit_book(book_id):
+@app.route('/add/<instance>', methods = ['GET', 'POST'])
+def add(instance):
+  obj = Record().give_child(instance)
+  form = obj.give_form()
+  #ipdb.set_trace()
+  form = form(request.form, obj=obj)
+  print form
+  print form.data
+  form.populate_obj(obj)
+  if request.method == 'POST':
+    save_message = obj.save_or_error()
+    if save_message == True:
+      return redirect(url_for(obj.pluralize()))
+    else:
+      return render_template('add_' + instance + '.html', form = form, notification = save_message)
+  else:
+    return render_template('add_' + instance + '.html', form = form, notification = None, action = obj.introduce().lower())
+
+
+
+
+
+@app.route('/edit/<int:book_id>', methods = ['GET', 'POST'])
+def edit(book_id):
   book = Book().get_by_id_or_new(book_id)
   print 'Edit book call. Book found: book'
-  book_form = BookForm(obj=book)
-  html = render_template('add_book.html', form=book_form)
-  html = '<tr><td>'+html+'</td></tr>'
-  class_to_sub = ".row_"+str(book_id)
-  json_response = {'html': html, 'ClassToSub': class_to_sub}
-  #print json_response  
-  return jsonify(**json_response)
+  if request.method == 'POST':
+    book_form = BookForm(request.form, obj=book)
+    book_form.populate_obj(book)
+    print book.save_or_error()
+    return redirect(url_for('books'))
+  else:
+    book_form = BookForm(obj=book)
+    action = str(book.id)
+    html = render_template('add_book.html', form=book_form, action = action)
+    if not request.is_xhr:
+      return html
+    else:
+      html = '<tr><td> <div hidden class="hiddenDisv">'+str(book.id)+'</div>'+html+'</td></tr>'
+      class_to_sub = ".row_"+str(book_id)
+      json_response = {'html': html, 'ClassToSub': class_to_sub}
+      #print json_response  
+      return jsonify(**json_response)
 
 
 
 
-@app.route('/delete_book/<int:book_id>', methods = ['DELETE'])
+@app.route('/delete_book/<int:book_id>', methods = ['GET', 'DELETE'])
 def delete_book(book_id):
   book = Book().get_by_id_or_new(book_id)
   return destroy_record(request, book)
@@ -105,4 +138,4 @@ def destroy_record(request, obj):
       print 'delete_', obj.introduce(), 'return data', data
       return jsonify(**data)
     else:
-      redirect(url_for(obj.pluralize()))
+      return redirect(url_for(obj.pluralize()))
