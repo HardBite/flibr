@@ -1,8 +1,4 @@
-<form class="form" method="POST" action="{% if action %}
-{{action}}
-  {%else%}
-/add_book
-{%endif%}">
+<form class="form" method="POST" {#action="{% if action %}{{action}}{%else%}/add_book{%endif%}"#}>
   <div class="notification"> <h1>{{notification}} </h1></div>
   <p> {{form.title.label}}:{{form.title(class_='title')}} </p>
   <p> {{form.author.label}}: {{form.author(class_='author')}}</p>

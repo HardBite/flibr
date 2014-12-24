@@ -1,16 +1,14 @@
 import re
-
+import flask.ext.whooshalchemy as whooshalchemy
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base, db_session
-#from flask_wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
 from sqlalchemy.ext.declarative import declared_attr
-from wtforms import StringField, validators
+from wtforms import Form, StringField, validators
 
 title_forbidden_chars = re.compile("""[^a-zA-Z0-9\&?!\.,'\s-]""", re.U)
 name_forbidden_chars = re.compile("""[^a-zA-Z0-9.,'\s-]""", re.U)
-
 
 
 
@@ -36,14 +34,20 @@ class Record(object):
     form = model_form((eval(type(self).__name__)), db_session)
     return form
 
+  def populate_with(self, form):
+    form.populate_obj(self)
+
+
   def introduce(self):
     return type(self).__name__
 
   def pluralize(self):
-    return (type(self).__name__.lower()+'s')
+    return str((type(self).__name__.lower()+'s'))
 
   def get_by_id_or_new(self, id):
+    print 'call to get_by_id_or_new recieved with', type(self).__name__, id
     entry = self.query.get(id)
+    print 'entry found:', entry
     return entry if entry else self
 
   def get_all(self):
@@ -73,11 +77,12 @@ class Record(object):
         db_session.add(self)
         db_session.commit()
         print 'entity', self, self.id, 'updated'
+        return validity
       else:
         db_session.add(self)
         db_session.commit()
         #print 'database commit commented out'
-        return True
+        return validity
     else:
       return validity
 
@@ -87,8 +92,8 @@ class Record(object):
     print 'database commit commented out'
     return True
 
-
 class Book(Base, Record):
+  __serchable__ = ['title']
   title = Column(String(255))
   author = relationship("Author", secondary = authors_books)
 
@@ -109,10 +114,8 @@ class Book(Base, Record):
       authors_list.append(author.name)
     return {"prime_value": self.title, "related_values": authors_list, "id" : self.id}
     
-
-    
-
 class Author(Base, Record):
+  __serchable__ = ['name']
   name = Column(String(127))
   book = relationship("Book", secondary = authors_books)
 
@@ -130,5 +133,11 @@ class Author(Base, Record):
     max_length = 127
     return self.string_valid(self.name, min_length, max_length, name_forbidden_chars)
 
-BookForm = model_form(Book, db_session)
-AuthorForm = model_form(Author, db_session)
+whooshalchemy.whoosh_index(app, Book)
+whooshalchemy.whoosh_index(app, Author)
+
+#BookForm = model_form(Book, db_session)
+#AuthorForm = model_form(Author, db_session)
+
+class SearchForm(Form):
+  search = StrinField('search', validators=[DataRequired()])

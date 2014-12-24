@@ -3,9 +3,6 @@
   <head>
     <link rel="stylesheet" type="text/css" href="/static/style.css">
     {#<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>#}
-
-
-
     <div id="header">
       {%if title %}
         <title> {{title}} Library </title>
@@ -15,6 +12,7 @@
     </div>
   </head>
 <body>
+{%include 'search.html'%}
   <div class="mainSection">
   <div class="leftSection">
    
@@ -22,10 +20,6 @@
     {% include entities_list[0].pluralize()+'.html' %}
   {%endif%}
   
-  {%if book_form%}
-   {%include 'add_book.html'%}
-  {%endif%}
-
   </div>
 
 </div>
