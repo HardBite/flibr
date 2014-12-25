@@ -1,7 +1,8 @@
 from app import app
 from flask import render_template, request, jsonify, redirect, url_for
-from models import Record, Book, BookForm, Author, AuthorForm
-#import ipdb
+from models import Record, Book, Author, SearchForm#, AuthorForm , BookForm
+from database import db_session
+
 
 @app.route('/')
 @app.route('/books')
@@ -14,9 +15,21 @@ def autors():
   authors_list = Author().get_all()
   return render_template('base.html', entities_list=authors_list)
 
-@app.route('/search', methods="POST")
+@app.route('/search', methods=["POST", "GET"])
 def search():
-  
+  form = SearchForm(request.form)
+  if request.method == 'POST':
+    return redirect(url_for('search_results', query = form.search.data))
+  else:
+    return render_template('search.html', search_form = form)
+
+@app.route('/search_results/<query>', methods = ['GET'])
+def search_results(query):
+  found_instances = Book().search_by_kwords(query)
+  found_titles = found_instances['in_titles']
+  by_authors = found_instances['in_names']
+  return render_template('search_results.html', query = query, found_titles = found_titles, by_authors = by_authors)
+
 
 @app.route('/add/<instance>', methods = ['GET', 'POST'])
 def add(instance):

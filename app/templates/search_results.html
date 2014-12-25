@@ -1,0 +1,22 @@
+<h1>Search results by word {{query}}</h1>
+<h2> Found in book titles </h2>
+{%if found_titles%}
+  <table>
+  {%with entities_list = found_titles%}
+  {%include 'book_row.html'%}
+  {%endwith%}
+</table>
+{%else%}
+  <h2> No books found </h2>
+{%endif%}
+
+<h2> Found by author's name </h2>
+{%if by_authors%}
+<table>
+  {%with entities_list = by_authors%}
+  {%include 'book_row.html'%}
+  {%endwith%}
+{%else%}
+  <h2> No books found </h2>
+</table>
+{%endif%}

@@ -1,11 +1,14 @@
 import re
-import flask.ext.whooshalchemy as whooshalchemy
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import label
+from sqlalchemy.ext.declarative import declared_attr
 from database import Base, db_session
 from wtforms.ext.sqlalchemy.orm import model_form
-from sqlalchemy.ext.declarative import declared_attr
 from wtforms import Form, StringField, validators
+import itertools
+#import ipdb
+
 
 title_forbidden_chars = re.compile("""[^a-zA-Z0-9\&?!\.,'\s-]""", re.U)
 name_forbidden_chars = re.compile("""[^a-zA-Z0-9.,'\s-]""", re.U)
@@ -14,8 +17,8 @@ name_forbidden_chars = re.compile("""[^a-zA-Z0-9.,'\s-]""", re.U)
 
 authors_books = Table('authors_books', Base.metadata,
                 Column('author_id', Integer, ForeignKey('author.id')),
-                Column('book_id', Integer, ForeignKey('book.id'))
-                       )
+                Column('book_id', Integer, ForeignKey('book.id')))
+
 class Record(object):
 # Abstracts common properties from Book and Author that to be inherited with mix-in
   @declared_attr
@@ -52,7 +55,27 @@ class Record(object):
 
   def get_all(self):
     return self.query.all()[::-1]
-    
+
+  def search_by_kwords(self, query_text, query_session=None):
+    found_id = {'in_titles':[], 'in_names':[]}
+
+    #class_alias = aliased(Book)
+    property_column = Book().__table__.c.title
+    book_query_session = db_session.query(Book.id, property_column)
+    found_id['in_titles'] = process_query(book_query_session, query_text, property_column)
+
+    #id_alias = aliased(Author.id)
+    property_column = Author().__table__.c.name
+    author_query_session = db_session.query(Author.id, property_column)
+    found_id['in_names'] = process_query(author_query_session, query_text, property_column)
+
+    found_inst = {'in_titles' : [], 'in_names':[]}
+    for ident in found_id['in_titles']:
+      found_inst['in_titles'].append(Book().get_by_id_or_new(ident))
+    for ident in found_id['in_names']:
+      for book in Author().get_by_id_or_new(ident).book:
+        found_inst['in_names'].append(book)
+    return found_inst
 
   def string_valid(self, string, min_length, max_length, forbidden_re):
     print "Validation message: validation call recieved"
@@ -93,7 +116,6 @@ class Record(object):
     return True
 
 class Book(Base, Record):
-  __serchable__ = ['title']
   title = Column(String(255))
   author = relationship("Author", secondary = authors_books)
 
@@ -115,7 +137,6 @@ class Book(Base, Record):
     return {"prime_value": self.title, "related_values": authors_list, "id" : self.id}
     
 class Author(Base, Record):
-  __serchable__ = ['name']
   name = Column(String(127))
   book = relationship("Book", secondary = authors_books)
 
@@ -133,11 +154,32 @@ class Author(Base, Record):
     max_length = 127
     return self.string_valid(self.name, min_length, max_length, name_forbidden_chars)
 
-whooshalchemy.whoosh_index(app, Book)
-whooshalchemy.whoosh_index(app, Author)
-
-#BookForm = model_form(Book, db_session)
-#AuthorForm = model_form(Author, db_session)
-
 class SearchForm(Form):
-  search = StrinField('search', validators=[DataRequired()])
+  search = StringField('search', validators=[validators.DataRequired()])
+
+def process_query(query_session, query_text, property_column):
+    current = query_session
+    query_list = query_text.split()
+    result = []
+    print query_list
+
+    for n in range(len(query_list), 0, -1):
+      print n
+      for subset in itertools.permutations(query_list, n):
+        print subset
+        
+        current = query_session
+        for word in subset:
+          next = current.filter(property_column.like(str("%"+word+"%")))
+          if next.count()>0:
+            current = next
+          else:
+            break
+        
+        for item in current:
+          if not item.id in result:
+            result.append(item.id)
+      if len(result)>20:
+        return result
+    else:
+      return result
