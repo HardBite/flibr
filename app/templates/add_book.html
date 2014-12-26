@@ -1,4 +1,6 @@
-<form class="form" method="POST" {#action="{% if action %}{{action}}{%else%}/add_book{%endif%}"#}>
+{%extends "base.html"%}
+{%block data%}
+<form class="form" method="POST" {#action="{% if action %}{{action}}{%else%}/add/book{%endif%}"#}>
   <div class="notification"> <h1>{{notification}} </h1></div>
   <p> {{form.title.label}}:{{form.title(class_='title')}} </p>
   <p> {{form.author.label}}: {{form.author(class_='author')}}</p>
@@ -7,3 +9,4 @@
   {{form.scrf_token}}
 
 </form>
+{%endblock%}

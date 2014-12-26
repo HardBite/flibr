@@ -1,3 +1,5 @@
+{%extends "base.html"%}
+{%block data%}
 <h1>Search results by word {{query}}</h1>
 <h2> Found in book titles </h2>
 {%if found_titles%}
@@ -20,3 +22,4 @@
   <h2> No books found </h2>
 </table>
 {%endif%}
+{%endblock%}

@@ -12,13 +12,27 @@
     </div>
   </head>
 <body>
-{#{%include 'search.html'%}#}
+<div class="navigation">
+  
+
+  <ul>
+  <li><a href="{{url_for('books')}}"> List of books </a> </li>
+  <li>{#<a href="{{url_for('authors')}}"> Authors index </a>#}<a href="/authors"> Authors index </a> </li>
+  <li><a href="{{url_for('search')}}"> Search by keywords </a></li>
+  <li><a href="{{url_for('add', instance = 'book')}}"> Add new book </a></li>
+  <li><a href="{{url_for('add', instance = 'author')}}"> Add new author </a></li>
+  </ul>
+  
+
+
   <div class="mainSection">
   <div class="leftSection">
    
+  {%block data%}
   {% if entities_list%}
     {% include entities_list[0].pluralize()+'.html' %}
   {%endif%}
+  {%endblock%}
   
   </div>
 
