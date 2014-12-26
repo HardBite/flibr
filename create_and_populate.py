@@ -12,12 +12,13 @@ v2 = ["rock ", "draw ", "tell jokes ", "write a code "]
 v3 = ["hard", "good", "bad", "ugly", "well"]
 
 authors = ["Rockwell", "Drawgood", "Stopson", "Hardwell", "Letbe"]
-
+aut_inst = []
 
 for author in authors:
   a = app.models.Author()
   a.name = author
   a.save_or_error()
+  aut_inst.append(a)
   print a.name
 
 for n in range(25):
@@ -25,7 +26,7 @@ for n in range(25):
   b.title = rnd.choice(v1)
   for v in (v2, v3):
     b.title += rnd.choice(v)
-  b.author = rnd.sample([1,2,3,4,5], rnd.randint(1, 5))
+  b.author = rnd.sample(aut_inst, rnd.randint(1, 5))
   b.save_or_error()
   print b.title, b.author
 
