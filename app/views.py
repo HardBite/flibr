@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 from app import app
 from flask import render_template, request, jsonify, redirect, url_for
 from models import Record, Book, Author, SearchForm#, AuthorForm , BookForm

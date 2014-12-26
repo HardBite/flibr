@@ -1,5 +1,6 @@
+#-*- coding: utf-8 -*-
 import re
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy import Column, Integer, Unicode, Table, ForeignKey #, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import label
 from sqlalchemy.ext.declarative import declared_attr
@@ -10,8 +11,8 @@ import itertools
 #import ipdb
 
 
-title_forbidden_chars = re.compile("""[^a-zA-Z0-9\&?!\.,'\s-]""", re.U)
-name_forbidden_chars = re.compile("""[^a-zA-Z0-9.,'\s-]""", re.U)
+title_forbidden_chars = re.compile(u"""[^a-zA-Zа-яА-я0-9\&?!\.,'\s-]""", re.U)
+name_forbidden_chars = re.compile(u"""[^a-zA-Z0-9.,'\s-]""", re.U)
 
 
 
@@ -81,7 +82,7 @@ class Record(object):
     print "Validation message: validation call recieved"
     if string:
       if min_length<=len(string)<=max_length:
-        if not forbidden_re.search(string):
+        if not forbidden_re.search(stirng):          #(transliterate(string)):
           print "Validation message: string seems valid"
           return True
         else:
@@ -112,11 +113,11 @@ class Record(object):
   def delete(self):
     db_session.delete(self)
     db_session.commit()
-    print 'database commit commented out'
+    #print 'database commit commented out'
     return True
 
 class Book(Base, Record):
-  title = Column(String(255))
+  title = Column(Unicode(255))
   author = relationship("Author", secondary = authors_books)
 
   def __str__(self):
@@ -137,7 +138,7 @@ class Book(Base, Record):
     return {"prime_value": self.title, "related_values": authors_list, "id" : self.id}
     
 class Author(Base, Record):
-  name = Column(String(127))
+  name = Column(Unicode(127))
   book = relationship("Book", secondary = authors_books)
 
   def __str__(self):
@@ -159,6 +160,8 @@ class SearchForm(Form):
 
 def process_query(query_session, query_text, property_column):
     current = query_session
+    #query_text = transliterate(query_text)
+    query_text = make_unicode(query_text)
     query_list = query_text.split()
     result = []
     print query_list
@@ -169,12 +172,18 @@ def process_query(query_session, query_text, property_column):
         print subset
         
         current = query_session
+        depth = 0
         for word in subset:
-          next = current.filter(property_column.like(str("%"+word+"%")))
+          next = current.filter(property_column.like(("%"+unicode(word)+"%")))
           if next.count()>0:
             current = next
+            depth += 1
           else:
-            break
+            if depth == 0:
+              current = []
+              break
+            else:
+              break
         
         for item in current:
           if not item.id in result:
@@ -183,3 +192,27 @@ def process_query(query_session, query_text, property_column):
         return result
     else:
       return result
+
+def make_unicode(s):
+  if isinstance(s, str):
+    return s.decode('utf-8')
+  elif isinstance(s, unicode):
+    return s
+  else:
+    print "unknown encoding"
+    return None
+"""
+def transliterate(unicode_string):
+  string = unicode_string.lower()
+  #sting = string.decode('cp1251')
+  charmap = {u"а": "a",u"б": "b",u"в":"v",u"г":"g",u"д":"d",u"е":"e",u"ё":"e",
+  u"ж": "g",u"з": "z",u"и":"i",u"й":"j",u"к":"k",u"л":"l",u"м":"m",u"н":"n",
+  u"о":"o",u"п":"p",u"р":"r",u"с":"s",u"т":"t",u"у":"u",u"ф":"f",u"х":"h",
+  u"ц":"z",u"ч":"h",u"ш":"h",u"щ":"h",u"ъ": "",u"ы": "i",u"ь": "",u"э":"e",
+  u"ю":"u",u"я":"a"}
+  new_string = ""
+  for n in range(len(string)):
+    if string[n] in charmap:
+      new_string+=charmap[string[n]]
+  print new_string
+  return new_string"""

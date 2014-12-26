@@ -1,2 +1,5 @@
-<form class="searchForm" action="{{url_for('search')}}" method="post" name="search">
+{%extends "base.html"%}
+{%block data%}
+<form class="searchForm" action="{{url_for('search')}}" accept-charset="UTF-8" method="post" name="search">
   {{search_form.search(size=20)}}<input type="submit" value="Search"></form>
+{%endblock%}
