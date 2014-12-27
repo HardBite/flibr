@@ -3,7 +3,7 @@
       <meta http-equiv="Content-Type" content = "text/html charset=utf-8">
       <link rel="stylesheet" type="text/css" href="/static/style.css">
       {#<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>#}
-      <div id="header">
+      <div>
          {%if title %}
          <title> {{title}} Library </title>
          {%else%}
@@ -12,7 +12,7 @@
       </div>
    </head>
    <body>
-    <h2> You're new favourite library</h2>
+    <h2 class="header"> You're new favourite library</h2>
       <div class="navigation">
          <ul>
             <li><a href="{{url_for('books')}}"> List of books </a> </li>
@@ -22,6 +22,7 @@
             <li><a href="{{url_for('add', instance = 'author')}}"> Add new author </a></li>
          </ul>
       </div>
+
       <div class="hiddenAuthorForm">
       <form method="POST" class="formAddAuthor">
          <div class="notification"><h1>None </h1></div>

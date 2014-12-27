@@ -1,11 +1,13 @@
 body{
    
     font-family: Palatino Linotype, Times New Roman, Serif;
-    background-color: #994411;
+    background-color: black;
     margin: 0px;
     padding: 0px;
-
-
+}
+.header{
+    color: white;
+    text-align: center;
 }
 
 .leftSection{

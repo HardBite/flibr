@@ -1,7 +1,9 @@
 {%extends "base.html"%}
 {%block data%}
+      {%if notification%}
+        <div class = "notification"><p>{{notification}}</p></div>
+      {%endif%}
 <form class="form" method="POST" {#action="{% if action %}{{action}}{%else%}/add/book{%endif%}"#}>
-  <div class="notification"> <h1>{{notification}} </h1></div>
   <p> {{form.title.label}}:{{form.title(class_='title')}} </p>
   <p> {{form.author.label}}: {{form.author(class_='author')}}</p>
   <p> <input type="submit" class="button" value="Add Book" ></p>

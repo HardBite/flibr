@@ -83,7 +83,7 @@ class Record(object):
     print "Validation message: validation call recieved"
     if string:
       if min_length<=len(string)<=max_length:
-        if not forbidden_re.search(stirng):          #(transliterate(string)):
+        if not forbidden_re.search(string):          #(transliterate(string)):
           print "Validation message: string seems valid"
           return True
         else:
