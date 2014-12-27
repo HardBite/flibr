@@ -1,9 +1,9 @@
 {%extends "base.html"%}
 {%block data%}
-<form method="POST" >
+<form method="POST" class="formAddAuthor">
     <div class="notification"> <h1>{{notification}} </h1></div>  
-    <div> {{form.name.label}}:{{form.name()}} </div>
-    <div> <input type="submit">
+    <div> {{form.name.label}}:{{form.name(class="authorsName")}} </div>
+    <div> <input type="submit" value="Add Author">
     {{form.scrf_token}}
 </form>
 {%endblock%}

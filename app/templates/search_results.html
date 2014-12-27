@@ -3,7 +3,7 @@
 <h1>Search results by word {{query}}</h1>
 <h2> Found in book titles </h2>
 {%if found_titles%}
-  <table>
+  <table class="entityTable">
   {%with entities_list = found_titles%}
   {%include 'book_row.html'%}
   {%endwith%}
@@ -14,7 +14,7 @@
 
 <h2> Found by author's name </h2>
 {%if by_authors%}
-<table>
+<table class="entityTable">
   {%with entities_list = by_authors%}
   {%include 'book_row.html'%}
   {%endwith%}

@@ -51,7 +51,8 @@ class Record(object):
   def get_by_id_or_new(self, id):
     print 'call to get_by_id_or_new recieved with', type(self).__name__, id
     entry = self.query.get(id)
-    print 'entry found:', entry
+    if entry:
+      print 'entry found:', entry.id
     return entry if entry else self
 
   def get_all(self):
@@ -174,7 +175,7 @@ def process_query(query_session, query_text, property_column):
         current = query_session
         depth = 0
         for word in subset:
-          next = current.filter(property_column.like(("%"+unicode(word)+"%")))
+          next = current.filter(property_column.like("%"+unicode(word)+"%"))
           if next.count()>0:
             current = next
             depth += 1

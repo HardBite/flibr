@@ -1,38 +1,94 @@
 body{
-    margin: 0;
+   
+    font-family: Palatino Linotype, Times New Roman, Serif;
+    background-color: #994411;
+    margin: 0px;
+    padding: 0px;
+
+
 }
 
-body.leftSection{
+.leftSection{
     float: left;
-    outline: solid 1px red;
-    background-color: green;
-    width: 350px;
+    outline: none;
+    background-color: #FFCC22;
+    width:100%;
+    height: 100%;
+    padding: 15px;
+    overflow: auto;
 }
-body.rigthSection{
+.hiddenAuthorForm{
+    display: none;
+}
+.navigation{
     float: right;
     outline: solid 1px #000000;
-    background-color: #66CC00;
-    width: 100px;
+    background-color: #CC0000;
+    color: white;
+    width: 25%;
+    position: fixed;
+    right: 0px;
+    top: 100px;
 }
 
-table.entitiesTable {
+a{
+    text-decoration: none;
+    font-size: 10;
+    font-weight: bold;
+    color: white;
+}
+.link {
+    float: right;
+    padding: 4px;
+}
+.delete{
+    background-color: red;
+    margin-left: 4px;
+    margin-right: 10px;
+}
+.edit{
+ background-color: orange;
+}
+
+a:hover{
+    text-decoration: none;
+    background-color: #FF9933;
+}
+.navigation a {
+    text-decoration: none;
+    color: white;
+    font-size: 24;
+}
+ul{
+list-style-type: none;
+padding: 0px;
+margin: 7px;
+}
+.navigation ul li:hover{
+    background-color: #FF9933
+
+}
+
+.entityTable {
     display: table;
     width: 100%;
 }
-table.entitiesTable thead, table.entitiesTable tbody {
+.entityTable thead, table.entityTable tbody {
     float: left;
     width: 100%;
     
 }
-table.entitiesTable tbody {
-    overflow: auto;
-    height: 400px;
+.entityTable tbody {
+  height: 100%;
 }
-table.entitiesTable tr {
+.entityTable tr {
     width: 100%;
     display: table;
     text-align: left;
 }
-table.entitiesTable th, table.entitiesTable td {
+.odd {
+    background-color: #FFEE77;
+}
+.entityTable th, table.entityTable td {
     width: 33%
 }

@@ -1,45 +1,40 @@
-<!doctype html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content = "text/html charset=utf-8">
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
-    {#<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>#}
-    <div id="header">
-      {%if title %}
-        <title> {{title}} Library </title>
-      {%else%}
-        <title> Welcome to The Library </title>
-      {% endif %}
-    </div>
-  </head>
-<body>
-<div class="navigation">
-  
-
-  <ul>
-  <li><a href="{{url_for('books')}}"> List of books </a> </li>
-  <li>{#<a href="{{url_for('authors')}}"> Authors index </a>#}<a href="/authors"> Authors index </a> </li>
-  <li><a href="{{url_for('search')}}"> Search by keywords </a></li>
-  <li><a href="{{url_for('add', instance = 'book')}}"> Add new book </a></li>
-  <li><a href="{{url_for('add', instance = 'author')}}"> Add new author </a></li>
-  </ul>
-  
-
-
-  <div class="mainSection">
-  <div class="leftSection">
-   
-  {%block data%}
-  {% if entities_list%}
-    {% include entities_list[0].pluralize()+'.html' %}
-  {%endif%}
-  {%endblock%}
-  
-  </div>
-
-</div>
-
-{#<script src="static/script.js"></script>#}
-
-</body>
+   <head>
+      <meta http-equiv="Content-Type" content = "text/html charset=utf-8">
+      <link rel="stylesheet" type="text/css" href="/static/style.css">
+      {#<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>#}
+      <div id="header">
+         {%if title %}
+         <title> {{title}} Library </title>
+         {%else%}
+         <title> Welcome to The Library </title>
+         {% endif %}
+      </div>
+   </head>
+   <body>
+    <h2> You're new favourite library</h2>
+      <div class="navigation">
+         <ul>
+            <li><a href="{{url_for('books')}}"> List of books </a> </li>
+            <li>{#<a href="{{url_for('authors')}}"> Authors index </a>#}<a href="/authors"> Authors index </a> </li>
+            <li><a href="{{url_for('search')}}"> Search by keywords </a></li>
+            <li><a href="{{url_for('add', instance = 'book')}}"> Add new book </a></li>
+            <li><a href="{{url_for('add', instance = 'author')}}"> Add new author </a></li>
+         </ul>
+      </div>
+      <div class="hiddenAuthorForm">
+      <form method="POST" class="formAddAuthor">
+         <div class="notification"><h1>None </h1></div>
+         <label for="name">Name</label>:<input class="authorsName" type="text" value=""> <input type="submit" value="Add Author">
+      </form>
+      </div>
+      <div class="leftSection">
+        {%block data%}
+          {% if entities_list%}
+            {% include entities_list[0].pluralize()+'.html' %}
+          {%endif%}
+        {%endblock%}
+      </div>
+      {#<script src="static/script.js"></script>#}
+   </body>
 </html>
