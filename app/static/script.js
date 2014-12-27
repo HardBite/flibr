@@ -1,68 +1,48 @@
-      $(document).ready(function(){
-          $(".button").click(function(event){
-            event.preventDefault();
-            var data = $(jQuery(".form")).serializeArray();
-            var X = $(".hiddenId")
-            console.log(this)
-            console.log(this).parent()
-            console.log(this).parent().parent()
-            $(".notification").fadeOut('slow', function(){$(this).hide();})
-            var request = $.ajax({
-              type: "POST",
-              url: "/add_book",
-              data: data,
-              success: function(response){
-                //console.log(response)
-                primeValue = response.prime_value 
-                relatedValues = response.related_values
-                //console.log(primeValue, relatedValues)
-                //console.log(response.html)
+$(window).load(function() {
+    function bindBtnListener() {
+        $(".button").on("click", function(event) {submit(event);});
+    };
+
+    function submit(event) {
+        event.preventDefault();
+        var data = $(jQuery(".form")).serializeArray();
+        var request = $.ajax({
+            type: "POST",
+            url: requestUrl,
+            data: data,
+            success: function(response) {
+                console.log(response)
                 $(".notification").html(response.notification);
-                $(".notification").show()
-                $(".entityTableBody tr:last").after(response.html)}
-            });
-            return false;
+                $(".notification").show();
+                if($(".entityTableBody tr:first").attr('class').indexOf("even") != -1){
+                  alert('even is there');
+                  (".entityTableBody tr:first").before(response)}
+                else{
+                  alert('odd is there');
+                  response = response.replace('odd', 'even');
+                  $(".entityTableBody tr:first").before(response);}
+                $("#addForm").addClass("hidden");
+                
+            }});
+    };
+    
+    console.log('ready');
+    
+    $("a.add").click(function(event) {
+        event.preventDefault();
+        console.log('clicked');
+        requestUrl = $(this).attr("href");
+        console.log(requestUrl);
+        $.ajax({
+            type: "GET",
+            url: requestUrl,
+            success: function(response) {
+                console.log(response);
+                $("#addForm").html(response);
+                console.log(this);
+                bindBtnListener();
+                $("#addForm").removeClass("hidden");
+            }
         });
-          $(".deleteLink").click(function(event){
-            //console.log(this);
-            event.preventDefault();
-            var requestUrl = $(this).attr('href');
-            var parentText = $(this).parent().text();
-            parentText = parentText.substr(0, (parentText.length-6));
-            //console.log(requestUrl);
-            //console.log(parentText)
-            if(confirm(("Delete "+parentText+". Are you sure?"))){
-              $.ajax({
-                type: "DELETE",
-                url: requestUrl,
-                data: "no data required",
-                success: function(response){
-                  $(".notification").html(response.notification);
-                  $(".notification").show()
-                  var classToHide = response.class_to_hide
-                  //console.log(classToHide)
-                  $(classToHide).fadeOut('slow', function(){$(this).remove();})
-                }
-              })};
-          });
-            $(".editLink").click(function(event){
-            //console.log(this);
-            event.preventDefault();
-            var requestUrl = $(this).attr('href');
-            var parentText = $(this).parent().text();
-            parentText = parentText.substr(0, (parentText.length-6));
-            //console.log(requestUrl);
-            //console.log(parentText);
-            {
-              $.ajax({
-                type: "GET",
-                url: requestUrl,
-                data: "no data required",
-                success: function(response){
-                  var classToSub = response.ClassToSub
-                  //console.log(response.html)
-                  $(classToSub).replaceWith(response.html)
-                }
-              })};
-          });
-        });
+    });
+});

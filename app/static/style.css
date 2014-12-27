@@ -19,7 +19,7 @@ body{
     padding: 15px;
     overflow: auto;
 }
-.hiddenAuthorForm{
+.hidden{
     display: none;
 }
 .navigation{
@@ -88,6 +88,7 @@ margin: 7px;
     display: table;
     text-align: left;
 }
+
 .odd {
     background-color: #FFEE77;
 }

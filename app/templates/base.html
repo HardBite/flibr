@@ -2,7 +2,7 @@
    <head>
       <meta http-equiv="Content-Type" content = "text/html charset=utf-8">
       <link rel="stylesheet" type="text/css" href="/static/style.css">
-      {#<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>#}
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
       <div>
          {%if title %}
          <title> {{title}} Library </title>
@@ -18,17 +18,23 @@
             <li><a href="{{url_for('books')}}"> List of books </a> </li>
             <li>{#<a href="{{url_for('authors')}}"> Authors index </a>#}<a href="/authors"> Authors index </a> </li>
             <li><a href="{{url_for('search')}}"> Search by keywords </a></li>
-            <li><a href="{{url_for('add', instance = 'book')}}"> Add new book </a></li>
-            <li><a href="{{url_for('add', instance = 'author')}}"> Add new author </a></li>
+            <li><a class="add" href="{{url_for('add', instance = 'book')}}"> Add new book </a></li>
+            <li><a class="add" href="{{url_for('add', instance = 'author')}}"> Add new author </a></li>
          </ul>
       </div>
 
-      <div class="hiddenAuthorForm">
-      <form method="POST" class="formAddAuthor">
+      <div class="hidden" id="addForm">
+
+      </div>
+      
+      <div class="hidden" id="addAuthorForm">
+        <form method="POST" class="formAddAuthor">
          <div class="notification"><h1>None </h1></div>
          <label for="name">Name</label>:<input class="authorsName" type="text" value=""> <input type="submit" value="Add Author">
-      </form>
+        </form>
       </div>
+
+      
       <div class="leftSection">
         {%block data%}
           {% if entities_list%}
@@ -36,6 +42,6 @@
           {%endif%}
         {%endblock%}
       </div>
-      {#<script src="static/script.js"></script>#}
+      <script src="{{ url_for('static', filename='script.js')}}"></script>
    </body>
 </html>

@@ -36,23 +36,25 @@ def search_results(query):
 def add(instance):
   obj = Record().give_child(instance)
   form = obj.give_form()
-  
   form = form(request.form, obj=obj)
-  print form
-  print form.data
   obj.populate_with(form)
   if request.method == 'POST':
     save_message = obj.save_or_error()
     if save_message == True:
-      #ipdb.set_trace()
-      try:
-        return redirect(url_for(obj.pluralize()))
-      except:
-        return redirect('/authors')
+      if request.is_xhr:
+        return render_template(instance+'_row.html', entities_list = [obj])
+      else:
+        try:
+          return redirect(url_for(obj.pluralize()))
+        except:
+          return redirect('/authors')
     else:
       return render_template('add_' + instance + '.html', form = form, notification = save_message)
   else:
-    return render_template('add_' + instance + '.html', form = form, notification = None, action = obj.introduce().lower())
+    if request.is_xhr:
+      return render_template(instance+"_form.html", form=form)
+    else:
+      return render_template('add_' + instance + '.html', form = form, notification = None, action = obj.introduce().lower())
 
 @app.route('/edit/<instance>/<obj_id>', methods = ['GET', 'POST'])
 def edit(instance, obj_id):
@@ -60,6 +62,7 @@ def edit(instance, obj_id):
   obj = obj.get_by_id_or_new(obj_id)
   form = obj.give_form()
   form = form(request.form, obj=obj)
+  print form.data
   if request.method == 'POST':
     obj.populate_with(form)
     save_message = obj.save_or_error()
