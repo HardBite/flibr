@@ -34,12 +34,22 @@ def search_results(query):
 
 @app.route('/add/<instance>', methods = ['GET', 'POST'])
 def add(instance):
+  print 'call to add/inst with', instance, 'request', request.method
+  if request.is_xhr:
+    print '\t via xhr', 'with request.form', request.form
+
   obj = Record().give_child(instance)
+  print '\tobj', type(obj).__name__, 'instantiated'
   form = obj.give_form()
+  print '\tform given with data', form.data
   form = form(request.form, obj=obj)
+  print '\tform populated', form.data
   obj.populate_with(form)
   if request.method == 'POST':
+    print '\t POST branch'
     save_message = obj.save_or_error()
+    print '\t save_message', save_message
+    print '\t\t', obj.json_descr()
     if save_message == True:
       if request.is_xhr:
         return render_template(instance+'_row.html', entities_list = [obj])
@@ -68,23 +78,23 @@ def edit(instance, obj_id):
     save_message = obj.save_or_error()
     if save_message == True:
       print obj.pluralize()
-      try:
-        return redirect(url_for(obj.pluralize()))
-      except:
-        return redirect('/authors')
+      if not request.is_xhr:
+        try:
+          return redirect(url_for(obj.pluralize()))
+        except:
+          return redirect('/authors')
+      else:
+        return render_template(instance+'_row.html', entities_list = [obj])
     else:
       return render_template('add_' + instance + '.html', form = form, notification = save_message)
   else:
-    action = 'edit/' + instance + '/' + str(obj.id)
-    html = render_template('add_'  + instance + '.html', form=form, action = action)
+    html = render_template('add_'  + instance + '.html', form=form)
     if not request.is_xhr:
       return html
     else:
-      html = '<tr><td> <div hidden class="hiddenDisv">'+str(obj.id)+'</div>'+html+'</td></tr>'
-      class_to_sub = ".row_"+str(obj.id)
-      json_response = {'html': html, 'ClassToSub': class_to_sub}
-      #print json_response  
-      return jsonify(**json_response)
+      html = render_template(instance + '_form.html', form = form)
+      print 'html marked to respond:', html
+      return html
 
 @app.route('/delete/<instance>/<obj_id>', methods = ['GET', 'DELETE'])
 def delete(instance, obj_id):

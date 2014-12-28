@@ -36,6 +36,8 @@ class Record(object):
 
   def give_form(self):
     form = model_form((eval(type(self).__name__)), db_session)
+    print 'in give_form', type(self).__name__
+    print form.data
     return form
 
   def populate_with(self, form):

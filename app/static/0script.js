@@ -1,4 +1,4 @@
-/*      $(document).ready(function(){
+      $(document).ready(function(){
           
           $(".deleteLink").click(function(event){
             //console.log(this);
@@ -22,14 +22,15 @@
                 }
               })};
           });
-            $(".editLink").click(function(event){
+            $(".edit").click(function(event){
             //console.log(this);
             event.preventDefault();
             var requestUrl = $(this).attr('href');
+            console.log(requestUrl);
             var parentText = $(this).parent().text();
             parentText = parentText.substr(0, (parentText.length-6));
-            //console.log(requestUrl);
-            //console.log(parentText);
+            console.log(parentText);
+                                 
             {
               $.ajax({
                 type: "GET",
@@ -37,12 +38,12 @@
                 data: "no data required",
                 success: function(response){
                   var classToSub = response.ClassToSub
-                  //console.log(response.html)
+                  console.log(response.html)
                   $(classToSub).replaceWith(response.html)
                 }
               })};
           });
-        });*/
+        });
 $(".button").on('click', function(event){
             alert('clicked')
             event.preventDefault();
