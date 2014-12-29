@@ -11,8 +11,8 @@ import itertools
 #import ipdb
 
 
-title_forbidden_chars = re.compile(u"""[^a-zA-Zа-яА-я0-9\&?!\.,'\s-]""", re.U)
-name_forbidden_chars = re.compile(u"""[^a-zA-Z0-9.,'\s-]""", re.U)
+title_forbidden_chars = re.compile(u"""[^a-zA-Zа-яА-Я0-9\&?!\.,'\s-]""", re.U)
+name_forbidden_chars = re.compile(u"""[^a-zA-Zа-яА-Я0-9.,'\s-]""", re.U)
 
 
 
@@ -204,18 +204,3 @@ def make_unicode(s):
   else:
     print "unknown encoding"
     return None
-"""
-def transliterate(unicode_string):
-  string = unicode_string.lower()
-  #sting = string.decode('cp1251')
-  charmap = {u"а": "a",u"б": "b",u"в":"v",u"г":"g",u"д":"d",u"е":"e",u"ё":"e",
-  u"ж": "g",u"з": "z",u"и":"i",u"й":"j",u"к":"k",u"л":"l",u"м":"m",u"н":"n",
-  u"о":"o",u"п":"p",u"р":"r",u"с":"s",u"т":"t",u"у":"u",u"ф":"f",u"х":"h",
-  u"ц":"z",u"ч":"h",u"ш":"h",u"щ":"h",u"ъ": "",u"ы": "i",u"ь": "",u"э":"e",
-  u"ю":"u",u"я":"a"}
-  new_string = ""
-  for n in range(len(string)):
-    if string[n] in charmap:
-      new_string+=charmap[string[n]]
-  print new_string
-  return new_string"""

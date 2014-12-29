@@ -1,7 +1,4 @@
-{%if notification%}
-  <div class = "notification"><p>{{notification}}</p></div>
-{%endif%}
-  <form class="form" method="POST">
+{%if notification%}<div class = "notification">{{notification}}</div>{%endif%}<form class="form" method="POST">
     <p> {{form.title.label}}:{{form.title}} </p>
     <p> {{form.author.label}}: {{form.author}}</p>
     <p> <input type="submit" class="button" id='submit'value="Add Book" ></p>
