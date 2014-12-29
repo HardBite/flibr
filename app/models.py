@@ -58,7 +58,7 @@ class Record(object):
     return entry if entry else self
 
   def get_all(self):
-    return self.query.all()[::-1]
+    return self.query.all()[-5:]
 
   def search_by_kwords(self, query_text, query_session=None):
     found_id = {'in_titles':[], 'in_names':[]}
@@ -150,8 +150,8 @@ class Author(Base, Record):
   def json_descr(self):
     books_list = []
     for book in self.book:
-      books_list.append(book.title.name)
-    return {"prime_value": self.title, "related_values": self.author, "id": self.id}
+      books_list.append(book.title)
+    return {"prime_value": self.name, "related_values": books_list, "id": self.id}
 
   def is_valid(self):
     min_length = 1

@@ -1,17 +1,25 @@
 $(window).load(function() {
     var requestUrl = ""
+    var selectorToSub = ""
+
+    $("a.add").addClass("hidden")
+    $("#addNew").removeClass("hidden")
+
 
     function bindBtnListener() {
         console.log('bindBtnListener call recieved');
-        $(".button").on("click", function(event) {submit(event)})
+        $("#submit").on("click", function(event) {submitNew(event)})
+
     };
 
     function bindLinkListener() {
         console.log('bindLinkListener call recieved');
-        $("a.edit").on("click", function(event) {edit(event)});
+        $("#addNew").on("click", function(event) {addObject(event, $(this).data('ref'))});
+        $("a.edit").on("click", function(event) {editObject(event)});
     };
 
-    function submit(event) {
+    function submitNew(event) {
+        console.log('submmit button clicked')
         event.preventDefault();
         var data = $(jQuery(".form")).serializeArray();
         console.log(data)
@@ -24,36 +32,35 @@ $(window).load(function() {
                 //console.log(response)
                 $(".notification").html(response.notification);
                 $(".notification").show();
-                if($(".entityTableBody tr:first").attr('class').indexOf("even") != -1){
+                if($(".entityTableBody tr:nth-child(2)").attr('class').indexOf("even") != -1){
                   alert('even is there');
-                  (".entityTableBody tr:first").before(response)}
+                  $(".entityTableBody tr:first").after(response);}
                 else{
                   alert('odd is there');
-                  response = response.replace('odd', 'even');
-                  $(".entityTableBody tr:first").before(response);}
-                $("#addForm").addClass("hidden");
-                
-                
+                  response = response.replace('odd', 'even');                  
+                  $(".entityTableBody tr:first").after(response);}
+                $("#addForm").addClass("hidden")
+                             
             }});
     };
     
-    function edit(event){
+    function editObject(event){
         event.preventDefault();
-        console.log(event)
-        requestUrl = event.target.href
-        console.log(requestUrl)
+        console.log(event);
+        requestUrl = event.target.href;
+        console.log(requestUrl);
         splittedUrl = requestUrl.split('/');
-        console.log(splittedUrl)
-        var classToSub = '.row_'+splittedUrl[(splittedUrl.length -1 )]
-        console.log(classToSub)
-
+        console.log(splittedUrl);
+        var selectorToSub = '.row_'+splittedUrl[(splittedUrl.length -1 )];
+        console.log(selectorToSub);
+        
             $.ajax({
             type: "GET",
             url: requestUrl,
             data: "no data required",
             success: function(response){
                console.log(response)
-              $(classToSub).replaceWith('<tr class ='+classToSub+'> <td>'+response+'</td> </tr>')
+              $(selectorToSub).replaceWith('<tr class ='+selectorToSub+'> <td>'+response+'</td> </tr>')
               bindBtnListener()
             }});
       
@@ -62,11 +69,15 @@ $(window).load(function() {
     console.log('ready');
     bindLinkListener();
     
-    $("a.add").click(function(event) {
+    function addObject(event, data) {
         event.preventDefault();
         console.log('clicked');
-        requestUrl = $(this).attr("href");
-        //console.log(requestUrl);
+        console.log(data)
+        //requestUrl = $(this).attr("href");
+        requestUrl = data
+        
+        selectorToSub = "#addForm"
+        console.log(requestUrl);
         $.ajax({
             type: "GET",
             url: requestUrl,
@@ -78,7 +89,7 @@ $(window).load(function() {
                 $("#addForm").removeClass("hidden");
             }
         });
-    });
+    };
 
 
 });

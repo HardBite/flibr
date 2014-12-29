@@ -2,8 +2,8 @@
   <div class = "notification"><p>{{notification}}</p></div>
 {%endif%}
   <form class="form" method="POST">
-    <p> {{form.title.label}}:{{form.title(class_='title')}} </p>
-    <p> {{form.author.label}}: {{form.author(class_='author')}}</p>
-    <p> <input type="submit" class="button" value="Add Book" ></p>
+    <p> {{form.title.label}}:{{form.title}} </p>
+    <p> {{form.author.label}}: {{form.author}}</p>
+    <p> <input type="submit" class="button" id='submit'value="Add Book" ></p>
   </form>
     

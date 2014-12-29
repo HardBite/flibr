@@ -23,11 +23,8 @@
          </ul>
       </div>
 
-      <div class="hidden" id="addForm">
-
-      </div>
       
-      <div class="leftSection">
+     <div class="leftSection">
         {%block data%}
           {% if entities_list%}
             {% include entities_list[0].pluralize()+'.html' %}

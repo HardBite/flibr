@@ -2,7 +2,7 @@
         <div class = "notification"><p>{{notification}}</p></div>
       {%endif%}
 <form method="POST" class="form">
-    <div> {{form.name.label}}:{{form.name(class="authorsName")}} </div>
-    <div> <input class="button" type="submit" value="Add Author">
+    <div> {{form.name.label}}:{{form.name}} </div>
+    <div><input type="submit" class="button" id='submit' value="Add Author" >
     {{form.scrf_token}}
 </form>

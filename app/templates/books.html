@@ -1,7 +1,8 @@
 <table class="entityTable">
-    <thead><tr><th> Book title </th>
+    <thead><tr><th> Book title <input type="button" class = "hidden" value = "New Book" id = "addNew" data-ref = "add/book"></th>
       <th> Book Author(s) </th></tr> </thead>
   <tbody class="entityTableBody">
+        <tr class = "even"> <td> <div class="hidden even" id="addForm"> </div> </td></tr> 
         {%include 'book_row.html' %}
        </tbody>
 </table>
