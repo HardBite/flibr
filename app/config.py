@@ -3,9 +3,9 @@ import os
 
 #needed for SQLAlchemy
 basedir = os.path.abspath(os.path.dirname(__file__))
-#SQLALCHEMY_DATABASE_URI = 'sqlite:////' + os.path.join(basedir, 'app.db')
+SQLALCHEMY_DATABASE_URI = 'sqlite:////' + os.path.join(basedir, 'app.db')
 #windows DB path:
-SQLALCHEMY_DATABASE_URI = 'sqlite:///D:\\prg\\flibr\\flibr\\app\\app.db'
+#SQLALCHEMY_DATABASE_URI = 'sqlite:///D:\\prg\\flibr\\flibr\\app\\app.db'
 
 
 
