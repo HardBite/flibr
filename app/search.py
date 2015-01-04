@@ -1,3 +1,12 @@
+"""
+Classes:
+    SearchForm(Form): form of WTForms instantiated explicitly for the search.
+    Forms for the data models are generated with WTF model_form().
+
+Generic methods:
+    make_unicode(string): accepts string and returns it converted to unicode
+    if it was't the the instance of unicode, else returns string itself.
+"""
 from database import db_session
 import itertools
 from wtforms import Form, StringField, validators
