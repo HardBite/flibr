@@ -5,8 +5,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
 from database import Base, db_session
 from wtforms.ext.sqlalchemy.orm import model_form
-from wtforms import Form, StringField, validators
-import itertools
+
+from search import Search
+
 #import ipdb
 
 """
@@ -53,14 +54,6 @@ Generic variables:
     authors_books: sqlalchemy Table object that facilitates many-to-many
     relationship storing values of correspondent book's and author's id as
     foreign keys.
-
-Generic methods:
-    make_unicode(string): accepts string and returns it converted to unicode
-    if it was't the the instance of unicode, else returns string itself.
-
-    process_query: implements simple recursive search. Is called exclusively by
-    descendants of the Record class via search_by_kwords method. Should be
-    substitued by native database search extencions.
 """
 
 title_allowed_chars = re.compile(u"""[^a-zA-Zа-яА-Я0-9\&?!\.,'\s-]""", re.U)
@@ -70,103 +63,6 @@ name_allowed_chars = re.compile(u"""[^a-zA-Zа-яА-Я0-9.,'\s-]""", re.U)
 authors_books = Table('authors_books', Base.metadata,
                       Column('author_id', Integer, ForeignKey('author.id')),
                       Column('book_id', Integer, ForeignKey('book.id')))
-
-
-def make_unicode(s):
-    """Accepts string, returns same string utf-8 encoded if it wasn't"""
-    if isinstance(s, str):
-        return s.decode('utf-8')
-    elif isinstance(s, unicode):
-        return s
-    else:
-        print "unknown encoding"
-        return None
-
-
-def process_query(db_query, query_text, property_column):
-    """
-    Performs a recursive search through the DB entries for a model within given
-    property_column by filtering db_query gradually with all combinations of
-    whitespace terminated literals passed with query_text.
-
-    Example:
-    If one wants to search by keywords query_text="abc defg h" in books titles
-    this method will be called from instanse of the Book model with
-    corresponding Query object, contained in db_query, where search will be
-    performed in the property_column=column title of the model table.
-    Search will go on untill maximum length of result reached (20 entries)
-    or all reductive permutations of the keywords are searched with.
-    itertools.permutations will be called to select all possible subsets of:
-    3 (length of query_text), 2, 1 keywords.
-    For given example permutations will be:
-        ('abc', 'defg', 'h')
-        ('abc', 'h', 'defg')
-        ('defg', 'abc', 'h')
-        ('defg', 'h', 'abc')
-        ('h', 'abc', 'defg')
-        ('h', 'defg', 'abc')
-        ('abc', 'defg')
-        ('abc', 'h')
-        ('defg', 'abc')
-        ('defg', 'h')
-        ('h', 'abc')
-        ('h', 'defg')
-        ('abc',)
-        ('defg',)
-        ('h',)
-    From objects currently populating db_query, firstly those will be selected
-    which contain substring "abc" by filter(property_column.like("%abc%")).
-    Next step (depth += 1) filters remaining objects by substring
-    "defg" and so on. If on some step of filtering 0 objects found, than result
-    of previous step is added to result list. If none objects found even with
-    first keyword (depth==0), empty list is explicitly submitted to result.
-
-    Args:
-        db_query: sqlalchemy Query object for given model.
-        query_text (string): keyword(s) submitted
-        property_column (Book().__table__.c.title): column object of model
-            attribute to search within
-
-    Returns:
-        result (list): list of
-
-    """
-    current = db_query
-    #query_text = transliterate(query_text)
-    query_text = make_unicode(query_text)
-    query_list = query_text.split()
-    result = []
-    print query_list
-
-    for n in range(len(query_list), 0, -1):
-        print n
-        for subset in itertools.permutations(query_list, n):
-            print subset
-
-            current = db_query
-            depth = 0
-            for word in subset:
-                next = current.filter(
-                    property_column.like("%" + unicode(word) + "%"))
-                if next.count() > 0:
-                    current = next
-                    depth += 1
-                else:
-                    if depth == 0:
-                        current = []
-                        break
-                    else:
-                        break
-
-            print "current query is", current
-            for item in current:
-                print 'item within query', item
-                if not item.id in result:
-                    result.append(item.id)
-        if len(result) > 20:
-            return result
-    else:
-        return result
 
 
 class Record(object):
@@ -194,42 +90,30 @@ class Record(object):
     def populate_with(self, form):
         form.populate_obj(self)
 
-    def introduce(self):
-        return type(self).__name__
-
     def pluralize(self):
         return str((type(self).__name__.lower() + 's'))
 
     def get_by_id_or_new(self, id):
-        print 'call to get_by_id_or_new recieved with', type(self).__name__, id
+        #print 'call to get_by_id_or_new recieved with', type(self).__name__, id
         entry = self.query.get(id)
         if entry:
-            print 'entry found:', entry.id
+            pass
+            #print 'entry found:', entry.id
         return entry if entry else self
 
     def get_all(self):
         return self.query.all()[-5:]
 
-    def search_by_kwords(self, query_text, db_query=None):
-        found_id = {'in_titles': [], 'in_names': []}
-
-        #class_alias = aliased(Book)
-        property_column = Book().__table__.c.title
-        book_db_query = db_session.query(Book.id, property_column)
-        found_id['in_titles'] = process_query(
-            book_db_query, query_text, property_column)
-
-        #id_alias = aliased(Author.id)
-        property_column = Author().__table__.c.name
-        author_db_query = db_session.query(Author.id, property_column)
-        found_id['in_names'] = process_query(
-            author_db_query, query_text, property_column)
+    def search_by_kwords(self, query_text):
+        found_id = {}
+        found_id['in_titles'] = Search(Book(), query_text).result
+        found_id['in_names'] = Search(Author(), query_text).result
 
         found_inst = {'in_titles': [], 'in_names': []}
         for ident in found_id['in_titles']:
-            found_inst['in_titles'].append(Book().get_by_id_or_new(ident))
+            found_inst['in_titles'].append(Book().get_by_id_or_new(ident.id))
         for ident in found_id['in_names']:
-            for book in Author().get_by_id_or_new(ident).book:
+            for book in Author().get_by_id_or_new(ident.id).book:
                 found_inst['in_names'].append(book)
         return found_inst
 
@@ -241,7 +125,7 @@ class Record(object):
                     print "Validation message: string seems valid"
                     return True
                 else:
-                    return 'You have entered inacceptible characters'
+                    return 'You have entered inacceptable characters'
             else:
                 return 'Field should contain at least ' + str(min_length) + \
                        ' and ' + str(max_length) + ' at most'
@@ -319,7 +203,3 @@ class Author(Base, Record):
         min_length = 1
         max_length = 127
         return self.string_valid(self.name, min_length, max_length, name_allowed_chars)
-
-
-class SearchForm(Form):
-    search = StringField('search', validators=[validators.DataRequired()])

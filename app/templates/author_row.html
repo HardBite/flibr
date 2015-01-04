@@ -3,7 +3,7 @@
       {%for author in entities_list%}
         <tr class="row_{{author.id}} {{loop.cycle("odd", "even")}}">
           <td> {{author.name}}
-            <a class="delete" href={{url_for('delete', instance = author.introduce().lower(), obj_id = author.id)}}>DEL</a>  <a class="edit" href={{url_for('edit', instance = author.introduce().lower(), obj_id = author.id)}}>EDIT</a> </td>
+            <a class="delete" href={{url_for('delete', instance = "author", obj_id = author.id)}}>DEL</a>  <a class="edit" href={{url_for('edit', instance = "author", obj_id = author.id)}}>EDIT</a> </td>
           <td> <ul>{%for book in author.book%}
                 <li>{{book.title}}</li>
               {%endfor%} </ul></td></tr>

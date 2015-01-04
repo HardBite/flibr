@@ -1,7 +1,8 @@
 #-*- coding: utf-8 -*-
 from app import app
 from flask import render_template, request, redirect, url_for
-from models import Record, Book, Author, SearchForm
+from models import Record, Book, Author
+from search import SearchForm
 #from database import db_session
 
 
@@ -70,7 +71,7 @@ def add(instance):
             print 'html marked to respond:', html
             return html
         else:
-            return render_template('add_' + instance + '.html', form=form, notification=None, action=obj.introduce().lower())
+            return render_template('add_' + instance + '.html', form=form, notification=None)
 
 
 @app.route('/edit/<instance>/<obj_id>', methods=['GET', 'POST'])
@@ -106,6 +107,7 @@ def edit(instance, obj_id):
             html = render_template(instance + '_form.html', form=form)
             print 'html marked to respond:', html
             return html
+
 
 @app.route('/delete/<instance>/<obj_id>', methods=['GET', 'DELETE'])
 def delete(instance, obj_id):
