@@ -109,20 +109,22 @@ class Record(object):
         """Returns lowercased name of the class of calling object"""
         return str((type(self).__name__.lower() + 's'))
 
-    def get_by_id_or_new(self, id=None):
+    def get_by_id_or_new(self, obj_id=None):
         """
-        Returns object populated with data found in database by the id.
-        If none found or no id provided as argument, returns calling object
+        If no id provided returns calling object. Otherwise
+        returns object populated with data found in database by the id.
         """
-        entry = self.query.get(id)
-        return entry if entry else self
+        if not obj_id:
+            return self
+        else:
+            return self.query.get(obj_id)
 
     def get_all(self):
         """
         Retrieves all records of model from database
         and returns them as a list of instances
         """
-        return self.query.all()[-5:]
+        return self.query.all()#[-5:]
 
     def search_by_kwords(self, query_text):
         found_id = {}

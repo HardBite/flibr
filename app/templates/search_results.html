@@ -5,7 +5,9 @@
 {%if found_titles%}
   <table class="entityTable">
   {%with entities_list = found_titles%}
-  {%include 'book_row.html'%}
+  	{%for book in entities_list%}
+  		{%include 'partial/book.html'%}
+  	{%endfor%}
   {%endwith%}
 </table>
 {%else%}
@@ -16,7 +18,9 @@
 {%if by_authors%}
 <table class="entityTable">
   {%with entities_list = by_authors%}
-  {%include 'book_row.html'%}
+  	{%for book in entities_list%}
+  		{%include 'partial/book.html'%}
+  	{%endfor%}
   {%endwith%}
 {%else%}
   <h2> No books found </h2>
