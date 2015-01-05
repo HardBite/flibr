@@ -1,0 +1,19 @@
+{%extends 'base.html'%}
+{%block data%}
+    <table class="entityTable">
+        <thead>
+            <tr>
+                <th> Author name <input type="button" class = "hidden" value = "New Author" id = "addNew" data-ref = "add/author"></th>
+                <th> Author's book(s) </th>
+            </tr>
+        </thead>
+            <tbody class="entityTableBody">
+            <tr class = "even">
+                <td> <div class="hidden even" id="addForm"> </div> </td>
+            </tr> 
+            {%for author in entities_list%}
+                {%include 'partial/author.html'%}
+            {%endfor%}
+        </tbody>
+    </table>
+{%endblock%}

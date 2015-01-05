@@ -71,6 +71,10 @@ class Record(object):
 
     id = Column(Integer, primary_key=True)
 
+    def __repr__(self):
+        return type(self).__name__.lower()
+
+
     def give_child(self, inst_name):
         """
         Accepts string with the name of instance to be created.

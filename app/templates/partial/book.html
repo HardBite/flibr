@@ -1,0 +1,12 @@
+<tr class="row_{{book.id}}">
+    <td> {{book.title}} 
+        <a class="delete" href={{url_for('delete', instance="book", obj_id = book.id)}}>DEL</a>
+        <a class="edit" href={{url_for('edit', instance = "book", obj_id = book.id)}}>EDIT</a>
+    </td> 
+    <td> <ul>
+    		{%for author in book.author%}
+            <li>{{author.name}}</li>
+            {%endfor%} 
+        </ul>
+    </td>
+</tr>

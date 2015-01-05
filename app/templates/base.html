@@ -18,17 +18,19 @@
             <li><a href="{{url_for('books')}}"> List of books </a> </li>
             <li>{#<a href="{{url_for('authors')}}"> Authors index </a>#}<a href="/authors"> Authors index </a> </li>
             <li><a href="{{url_for('search')}}"> Search by keywords </a></li>
-            <li><a class="add" href="{{url_for('add', instance = 'book')}}"> Add new book </a></li>
-            <li><a class="add" href="{{url_for('add', instance = 'author')}}"> Add new author </a></li>
+            <li><a class="add" href="{{url_for('add', instance='book')}}"> Add new book </a></li>
+            <li><a class="add" href="{{url_for('add', instance='author')}}"> Add new author </a></li>
          </ul>
       </div>
 
       
      <div class="leftSection">
         {%block data%}
-          {% if entities_list%}
-            {% include entities_list[0].pluralize()+'.html' %}
-          {%endif%}
+          
+         {# {% if entities_list%} #}
+           {# {% include entities_list[0].pluralize()+'.html' %} #}
+          {# {%endif%}  #}
+        
         {%endblock%}
       </div>
       {#<script src="{{ url_for('static', filename='script.js')}}"></script>#}
