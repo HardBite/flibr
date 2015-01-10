@@ -11,7 +11,8 @@
             <tr class = "even">
                 <td> <div class="hidden even" id="addForm"> </div> </td>
             </tr> 
-            {%for author in entities_list%}
+            {%for obj in entities_list%}
+                {% set class = loop.cycle('odd', 'even')%}
                 {%include 'partial/author.html'%}
             {%endfor%}
         </tbody>

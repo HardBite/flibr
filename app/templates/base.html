@@ -2,7 +2,7 @@
    <head>
       <meta http-equiv="Content-Type" content = "text/html charset=utf-8">
       <link rel="stylesheet" type="text/css" href="/static/style.css">
-      {#<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>#}
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
       <div>
          {%if title %}
          <title> {{title}} Library </title>
@@ -15,8 +15,8 @@
     <h2 class="header"> You're new favourite library</h2>
       <div class="navigation">
          <ul>
-            <li><a href="{{url_for('books')}}"> List of books </a> </li>
-            <li>{#<a href="{{url_for('authors')}}"> Authors index </a>#}<a href="/authors"> Authors index </a> </li>
+            <li><a href="{{url_for('index', instance ='book')}}"> List of books </a> </li>
+            <li><a href="{{url_for('index', instance = 'author')}}"> Authors index </a></li>
             <li><a href="{{url_for('search')}}"> Search by keywords </a></li>
             <li><a class="add" href="{{url_for('add', instance='book')}}"> Add new book </a></li>
             <li><a class="add" href="{{url_for('add', instance='author')}}"> Add new author </a></li>
@@ -33,6 +33,6 @@
         
         {%endblock%}
       </div>
-      {#<script src="{{ url_for('static', filename='script.js')}}"></script>#}
+      <script src="{{ url_for('static', filename='script.js')}}"></script>
    </body>
 </html>

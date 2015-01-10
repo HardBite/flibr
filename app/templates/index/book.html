@@ -8,10 +8,8 @@
             </tr>
         </thead>
         <tbody class="entityTableBody">
-            <tr class = "even">
-                <td> <div class="hidden even" id="addForm"> </div></td>
-            </tr> 
-            {%for book in entities_list%}
+            {%for obj in entities_list%}
+                {% set class = loop.cycle('odd', 'even')%}
                 {%include 'partial/book.html'%}
             {%endfor%}
         </tbody>

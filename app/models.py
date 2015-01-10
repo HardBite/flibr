@@ -124,7 +124,7 @@ class Record(object):
         Retrieves all records of model from database
         and returns them as a list of instances
         """
-        return self.query.all()#[-5:]
+        return self.query.all()[-5:]
 
     def search_by_kwords(self, query_text):
         found_id = {}

@@ -1,7 +1,7 @@
 body{
    
     font-family: Palatino Linotype, Times New Roman, Serif;
-    background-color: white;
+    background-color: black;
     margin: 0px;
     padding: 0px;
 }
@@ -11,13 +11,13 @@ body{
 }
 
 .leftSection{
-    float: left;
+    /*float: left;*/
     outline: none;
     background-color: #FFCC22;
     width:100%;
-    height: 100%;
+    /*height: 100%;*/
     padding: 15px;
-    overflow: auto;
+    /*overflow: auto;*/
 }
 .hidden{
     display: none;

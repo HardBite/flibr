@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from app import app
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, jsonify
 from models import Record, Book, Author
 from search import SearchForm
 
@@ -43,8 +43,11 @@ def try_to_submit(obj, form):
         else:
             return redirect('index/'+repr(obj))
     else:
-        return render_template('add/'+repr(obj)+'.html', form=form,
-                               notification=save_message)
+        if request.is_xhr:
+            return jsonify({'error': save_message})
+        else:
+            return render_template('add/'+repr(obj)+'.html', form=form,
+                                   notification=save_message)
 
 
 @app.route('/')
@@ -65,8 +68,9 @@ def autors():
     return render_template('index/author.html', entities_list=authors_list)
 
 
+@app.route('/index')
 @app.route('/index/<instance>')
-def index(instance):
+def index(instance='book'):
     entities_list = Record().give_child(instance).get_all()
     return render_template('index/'+instance+'.html',
                            entities_list=entities_list)
@@ -97,22 +101,22 @@ def add(instance):
         return try_to_submit(obj, form)
     else:
         if request.is_xhr:
-            return render_template(instance+"_form.html", form=form)
+            return render_template('form/'+instance+".html", form=form)
         else:
-            return render_template('add/'+instance+'.html', form=form, notification=None)
+            return render_template('add/'+instance+'.html',
+                                   form=form, notification=None)
 
 
 @app.route('/edit/<instance>/<obj_id>', methods=['GET', 'POST'])
 def edit(instance, obj_id):
     obj, form = instantiate_and_form(request, instance, obj_id)
     if request.method == 'POST':
-       return try_to_submit(obj, form)
+        return try_to_submit(obj, form)
     else:
         if request.is_xhr:
-            return render_template(instance + '_form.html', form=form)
+            return render_template('form/'+instance+'.html', form=form)
         else:
-            return render_template('add/'    + instance + '.html', form=form)
-
+            return render_template('add/' + instance + '.html', form=form)
 
 
 @app.route('/delete/<instance>/<obj_id>', methods=['GET', 'DELETE'])

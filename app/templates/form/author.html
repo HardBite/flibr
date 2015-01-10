@@ -1,8 +1,6 @@
-      {%if notification%}
-        <div class = "notification"><p>{{notification}}</p></div>
-      {%endif%}
+<div class = "notification"><p>{{notification}}</p></div>
 <form method="POST" class="form">
-    <div> {{form.name.label}}:{{form.name}} </div>
-    <div><input type="submit" class="button" id='submit' value="Add Author" >
+    <p> {{form.name.label}}:{{form.name}} </p>
+    <p><div id="buttons"><input type="submit" class="button" id='submit' value="Add Author"></div></p>
     {{form.scrf_token}}
 </form>
