@@ -42,6 +42,7 @@ Generic variables:
     foreign keys.
 """
 import re
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, Unicode, Table, ForeignKey  # , String
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declared_attr
@@ -74,7 +75,6 @@ class Record(object):
     def __repr__(self):
         return type(self).__name__.lower()
 
-
     def give_child(self, inst_name):
         """
         Accepts string with the name of instance to be created.
@@ -85,6 +85,8 @@ class Record(object):
             return Book()
         elif inst_name == 'author':
             return Author()
+        elif inst_name == 'user':
+            return User()
         else:
             return None
 
@@ -126,19 +128,6 @@ class Record(object):
         """
         return self.query.all()[-5:]
 
-    def search_by_kwords(self, query_text):
-        found_id = {}
-        found_id['in_titles'] = Search(Book(), query_text).result
-        found_id['in_names'] = Search(Author(), query_text).result
-
-        found_inst = {'in_titles': [], 'in_names': []}
-        for ident in found_id['in_titles']:
-            found_inst['in_titles'].append(Book().get_by_id_or_new(ident.id))
-        for ident in found_id['in_names']:
-            for book in Author().get_by_id_or_new(ident.id).book:
-                found_inst['in_names'].append(book)
-        return found_inst
-
     def string_valid(self, string, min_length, max_length, forbidden_re):
         print "Validation message: validation call recieved"
         if string:
@@ -163,15 +152,8 @@ class Record(object):
         print "Call to save_or_error. Id of given instance is", self.id
         validity = self.is_valid()
         if validity is True:
-            #if self.id:
-            #    db_session.add(self)
-            #    db_session.commit()
-            #    print 'entity', self, self.id, 'updated'
-            #    return validity
-            #else:
             db_session.add(self)
             db_session.commit()
-            # print 'database commit commented out'
             return validity
         else:
             return validity
@@ -180,8 +162,20 @@ class Record(object):
         """Delete database entry corresponding to calling model class object"""
         db_session.delete(self)
         db_session.commit()
-        # print 'database commit commented out'
         return True
+
+    def search_by_kwords(self, query_text):
+        found_id = {}
+        found_id['in_titles'] = Search(Book(), query_text).result
+        found_id['in_names'] = Search(Author(), query_text).result
+
+        found_inst = {'in_titles': [], 'in_names': []}
+        for ident in found_id['in_titles']:
+            found_inst['in_titles'].append(Book().get_by_id_or_new(ident.id))
+        for ident in found_id['in_names']:
+            for book in Author().get_by_id_or_new(ident.id).book:
+                found_inst['in_names'].append(book)
+        return found_inst
 
 
 class Book(Base, Record):
@@ -256,3 +250,33 @@ class Author(Base, Record):
         for book in self.book:
             books_list.append(book.title)
         return {"prime_value": self.name, "related_values": books_list, "id": self.id}
+
+
+class User(Base, Record):
+
+    username = Column(Unicode(32))
+    hashed_pass = Column("password", Unicode(160))
+
+    def is_active(self):
+        return True
+
+    def get_id(self):
+        return unicode(self.id)
+
+    def is_authenticated(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+
+    def is_valid(self):
+        min_length = 1
+        max_length = 32
+        return self.string_valid(self.username, min_length, max_length, name_allowed_chars)
+
+    def set_password(self, password):
+        self.hashed_pass = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.hashed_pass, password)

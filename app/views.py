@@ -1,8 +1,14 @@
 #-*- coding: utf-8 -*-
-from app import app
-from flask import render_template, request, redirect, url_for, jsonify
-from models import Record, Book, Author
+from app import app, login_manager
+from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask import render_template, request, redirect, url_for, jsonify, session, g
+from models import Record, Book, Author, User
 from search import SearchForm
+
+
+@login_manager.user_loader
+def load_user(userid):
+    return User.query.get(userid)
 
 
 def instantiate_and_form(request, instance, obj_id=None):
@@ -51,23 +57,6 @@ def try_to_submit(obj, form):
 
 
 @app.route('/')
-@app.route('/books')
-def books():
-    """
-    Default route for application ('/') as well as shortcut to
-    '/index/<instance>' action where instance=book.
-    """
-    books_list = Book().get_all()
-    return render_template('index/book.html', entities_list=books_list)
-
-
-@app.route('/authors')
-def autors():
-    """Shortcut to '/index/<instance>' action where instance=author."""
-    authors_list = Author().get_all()
-    return render_template('index/author.html', entities_list=authors_list)
-
-
 @app.route('/index')
 @app.route('/index/<instance>')
 def index(instance='book'):
@@ -94,7 +83,9 @@ def search_results(query):
                            found_titles=found_titles, by_authors=by_authors)
 
 
+
 @app.route('/add/<instance>', methods=['GET', 'POST'])
+@login_required
 def add(instance):
     obj, form = instantiate_and_form(request, instance)
     if request.method == 'POST':
@@ -108,6 +99,7 @@ def add(instance):
 
 
 @app.route('/edit/<instance>/<obj_id>', methods=['GET', 'POST'])
+@login_required
 def edit(instance, obj_id):
     obj, form = instantiate_and_form(request, instance, obj_id)
     if request.method == 'POST':
@@ -120,6 +112,7 @@ def edit(instance, obj_id):
 
 
 @app.route('/delete/<instance>/<obj_id>', methods=['GET', 'DELETE'])
+@login_required
 def delete(instance, obj_id):
     obj = Record().give_child(instance)
     obj = obj.get_by_id_or_new(obj_id)
@@ -128,3 +121,42 @@ def delete(instance, obj_id):
         return redirect('index/'+repr(obj))
     else:
         return "it ok"
+
+
+@app.route('/log_in', methods=['GET', 'POST'])
+def log_in():
+    if request.method == 'POST':
+        user_obj, user_form = instantiate_and_form(request, 'user')
+        ##Existing user:
+        U = User.query.filter(User.username == request.form['username']).first()
+        if U and U.check_password(request.form['hashed_pass']):
+            print "logging in returns", login_user(U)
+            print current_user.username
+            return redirect('/')
+        else:
+            return redirect('log_in')
+    else:
+        user_obj, user_form = instantiate_and_form(request, 'user')
+        return render_template('add/user.html', form=user_form)
+
+@app.route('/log_out')
+@login_required
+def log_out():
+    logout_user()
+    return redirect('/')
+
+
+@app.route('/sign_up', methods=['GET', 'POST'])
+def sign_up():
+    if request.method == 'POST':
+        user_obj, user_form = instantiate_and_form(request, 'user')
+        user_obj.set_password(user_form.data['hashed_pass'])
+        validity = user_obj.save_or_error()
+        if validity is True:
+            print "logging in returns", login_user(user_obj)
+            return redirect('/')
+        else:
+            return redirect('sign_up', notification=validity)
+    else:
+        user_obj, user_form = instantiate_and_form(request, 'user')
+        return render_template('add/user.html', form=user_form)

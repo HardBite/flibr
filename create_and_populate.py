@@ -29,7 +29,3 @@ for n in range(25):
   b.author = rnd.sample(aut_inst, rnd.randint(1, 5))
   b.save_or_error()
   print b.title, b.author
-
-
-
-

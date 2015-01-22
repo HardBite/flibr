@@ -1,0 +1,7 @@
+<div class = "notification"><p>{{notification}}</p></div>
+<form method="POST" class="form">
+    <p> {{form.username.label}}:{{form.username}} </p>
+    <p> {{form.hashed_pass.label}}:{{form.hashed_pass}}
+    <p><div id="buttons"><input type="submit" class="button" id='submit' value="Submit"></div></p>
+    {{form.scrf_token}}
+</form>

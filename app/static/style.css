@@ -35,21 +35,29 @@ body{
 
 a{
     text-decoration: none;
-    font-size: 10;
+    font-size: 18;
     font-weight: bold;
     color: white;
 }
+
+.logging{
+    text-align: right;
+    margin-right: 50px;
+}
+
 .link {
     float: right;
     padding: 4px;
 }
 .delete{
     background-color: red;
+    font-size: 10;
     margin-left: 4px;
     margin-right: 10px;
 }
 .edit{
  background-color: orange;
+ font-size: 10;
 }
 
 a:hover{
