@@ -10,6 +10,11 @@ body{
     text-align: center;
 }
 
+.message-container{
+    /*position: absolute;*/
+    color: white;
+}
+
 .leftSection{
     /*float: left;*/
     outline: none;

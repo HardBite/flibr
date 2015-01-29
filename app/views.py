@@ -160,3 +160,5 @@ def sign_up():
     else:
         user_obj, user_form = instantiate_and_form(request, 'user')
         return render_template('add/user.html', form=user_form)
+
+

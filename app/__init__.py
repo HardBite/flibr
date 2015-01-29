@@ -8,7 +8,7 @@ db = database.engine
 app.config['SECRET_KEY'] = 'very-secret-key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "add/user.html"
+login_manager.login_view = "/log_in"
 
 
 from app import views

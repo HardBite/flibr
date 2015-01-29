@@ -16,13 +16,24 @@
 
     <div> <h2 class="header">
       {% if current_user.is_authenticated() %}
-        Hi, {{current_user.username}}! This is your new favourite library </h2> <p class="logging"> <a href="{{url_for('log_out')}}"> |Log out| </a> </p>
+        Hi, {{current_user.username}}! This is your new favourite library </h2> <p class="log_out"> <a href="{{url_for('log_out')}}"> |Log out| </a> </p>
       {%else%}
         Your new favourite library </h2>
-        <p class="logging" > <a href="{{url_for('log_in')}}"> |Log in| </a> 
+        <p class="log_in" > <a href="{{url_for('log_in')}}"> |Log in| </a> 
                              <a href="{{url_for('sign_up')}}"> |Sign up| </a> </p>
       {%endif%}
-    <div>
+    <div class="message-container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-msg">
+          {% for message in messages %}
+            <p> {{message}} </p>
+          {% endfor %}
+         </div>
+      {% endif %}
+    {% endwith %}
+    </div>
+
       <div class="navigation">
          <ul>
             <li><a href="{{url_for('index', instance ='book')}}"> List of books </a> </li>

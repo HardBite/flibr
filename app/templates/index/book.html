@@ -3,7 +3,7 @@
     <table class="entityTable">
         <thead>
             <tr>
-                <th> Book title <input type="button" class = "hidden" value = "New Book" id = "addNew" data-ref = "add/book"></th>
+                <th> Book title <a class = "hidden" id = "addNew" data-ref = "add/book" href = {{url_for('add', instance = "book")}}> Add new Book</a></th>
                 <th> Book Author(s) </th>
             </tr>
         </thead>

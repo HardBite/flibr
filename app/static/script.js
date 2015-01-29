@@ -1,4 +1,5 @@
 $(window).load(function() {
+    var authenticated = ifAuthenticated();
     var requestUrl = ""
     var selectorToSub = ""
         //Hide add book and add author links in navbar
@@ -28,21 +29,32 @@ $(window).load(function() {
     //Recives a call whenever links dynamically added to bind event to them
     function bindLinkListener() {
         console.log('bindLinkListener call recieved');
-        $("#addNew").off().on("click", function(event) {
-            addObject(event, $(this).data('ref'))
-        });
-        $("a.edit").off().off().on("click", function(event) {
-            editObject(event, $(this).parent().parent().attr('class'))
-        });
-        $("a.delete").off().on("click", function(event) {
-            deleteObject(event, $(this).parent().parent().attr('class'))
-        })
+        if (authenticated == true) {
+            $("#addNew").off().on("click", function(event) {
+                addObject(event, $(this).data('ref'))
+            });
+            $("a.edit").off().off().on("click", function(event) {
+                editObject(event, $(this).parent().parent().attr('class'))
+            });
+            $("a.delete").off().on("click", function(event) {
+                deleteObject(event, $(this).parent().parent().attr('class'))
+            });
+        }
+        else {
+            $("#addNew, a.edit, a.delete").off().on("click", function(event){
+                flashAuthenticateNotice()})
+              };
     };
+
     //Adds cancel button to dynamically added forms
     function addCancelButton() {
         $("#buttons").append('<input type="button" id="cancel" value="Cancel" >')
     };
 
+    //Flashes notice to authenticate
+    function flashAuthenticateNotice(){
+        $(".message-container").html("Please log in to be able to add, edit or delete entries")
+    };
 
     function submitNew(event) {
         console.log('submmit button clicked')
@@ -153,6 +165,11 @@ $(window).load(function() {
                 
             }
         });
+    };
+    function ifAuthenticated(){
+        if ($(".log_out").length )
+            {return true}
+        else {return false}
     };
 
 
